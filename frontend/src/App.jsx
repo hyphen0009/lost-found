@@ -13,6 +13,7 @@ import { AuthProvider, useAuth } from './AuthContext';
 import './App.css';
 import appIcon from './assets/icon.png';
 import { subscribeToPush } from './push-notifications';
+import InstallPrompt from './components/InstallPrompt';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -114,6 +115,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        <InstallPrompt />
         <Header />
         <main style={{ paddingBottom: '5rem' }}>
           <Routes>
