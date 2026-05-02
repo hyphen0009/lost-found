@@ -16,28 +16,52 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 export async function subscribeToPush() {
-  if (!('serviceWorker' in navigator)) return;
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return null;
 
-  const registration = await navigator.serviceWorker.ready;
-  
-  // Check if already subscribed
-  const existingSubscription = await registration.pushManager.getSubscription();
-  if (existingSubscription) return existingSubscription;
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    
+    // Check if already subscribed
+    const existingSubscription = await registration.pushManager.getSubscription();
+    if (existingSubscription) return existingSubscription;
 
-  const subscription = await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(PUBLIC_VAPID_KEY)
-  });
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(PUBLIC_VAPID_KEY)
+    });
 
-  // Send to backend
-  await fetch('/api/users/subscribe', {
-    method: 'POST',
-    body: JSON.stringify(subscription),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Send to backend
+      await fetch('/api/users/subscribe', {
+        method: 'POST',
+        body: JSON.stringify(subscription),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
     }
-  });
 
-  return subscription;
+    return subscription;
+  } catch (err) {
+    console.error('Failed to subscribe to push:', err);
+    return null;
+  }
+}
+
+export async function requestNotificationPermission() {
+  if (!('Notification' in window)) return false;
+
+  let permission = Notification.permission;
+  if (permission === 'default') {
+    permission = await Notification.requestPermission();
+  }
+
+  if (permission === 'granted') {
+    await subscribeToPush();
+    return true;
+  }
+  
+  return false;
 }

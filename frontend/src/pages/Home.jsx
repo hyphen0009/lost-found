@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import ItemCard from '../components/ItemCard';
+import { requestNotificationPermission } from '../push-notifications';
 
 const Home = () => {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Request notification permission on first visit
+    requestNotificationPermission().catch(console.error);
+  }, []);
 
   useEffect(() => {
     fetchItems();

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, User, Trash2, CheckCircle2, ShieldCheck, HelpCircle, Phone, X, Folder } from 'lucide-react';
+import { requestNotificationPermission } from '../push-notifications';
 
 const ItemCard = ({ item, isOwnerView = false, onManageClaims }) => {
   const { user } = useAuth();
@@ -15,6 +16,9 @@ const ItemCard = ({ item, isOwnerView = false, onManageClaims }) => {
     e.preventDefault();
     if (!user) { navigate('/login'); return; }
     setSubmitting(true);
+    // Request permission on user gesture
+    requestNotificationPermission().catch(console.error);
+    
     try {
       const res = await fetch('/api/claims', {
         method: 'POST',

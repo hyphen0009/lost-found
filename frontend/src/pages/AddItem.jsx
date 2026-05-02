@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Phone } from 'lucide-react';
 import { useAuth } from '../AuthContext';
+import { requestNotificationPermission } from '../push-notifications';
 
 const AddItem = () => {
   const navigate = useNavigate();
@@ -15,6 +16,9 @@ const AddItem = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    // Request permission on user gesture
+    requestNotificationPermission().catch(console.error);
+    
     try {
       const res = await fetch('/api/items', {
         method: 'POST',

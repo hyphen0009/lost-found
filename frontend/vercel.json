@@ -4,6 +4,10 @@
     {
       "source": "/api/(.*)",
       "destination": "https://lost-found-1-qrxm.onrender.com/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
