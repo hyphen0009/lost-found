@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy } from 'lucide-react';
+import { Trophy, Info } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Leaderboard = () => {
   const [users, setUsers] = useState([]);
@@ -17,7 +18,10 @@ const Leaderboard = () => {
 
   return (
     <div className="container" style={{ paddingTop: '1.5rem' }}>
-      <div className="animate-in" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+      <div className="animate-in" style={{ textAlign: 'center', marginBottom: '2rem', position: 'relative' }}>
+        <Link to="/about" className="icon-btn-secondary" title="About" style={{ position: 'absolute', top: 0, right: 0 }}>
+          <Info size={24} />
+        </Link>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
           <Trophy size={48} color="var(--primary)" />
         </div>

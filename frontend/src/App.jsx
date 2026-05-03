@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
-import { Search, Briefcase, PlusCircle, Folder, Trophy, LogOut, UserPlus, LogIn, Info, Bell } from 'lucide-react';
+import { Search, Briefcase, PlusCircle, Folder, Trophy, LogOut, UserPlus, LogIn, Info, Bell, Share2 } from 'lucide-react';
 import Home from './pages/Home';
 import AddItem from './pages/AddItem';
 import Login from './pages/Login';
@@ -60,6 +60,22 @@ const BottomNav = () => {
 const Header = () => {
   const { user, logout } = useAuth();
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Lost & Found',
+          text: 'Check out this platform for lost and found items!',
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      alert('Sharing is not supported on this browser.');
+    }
+  };
+
   const handleEnableNotifications = async () => {
     try {
       await subscribeToPush();
@@ -82,9 +98,9 @@ const Header = () => {
             <button onClick={handleEnableNotifications} className="icon-btn-secondary" title="Enable Notifications">
               <Bell size={18} />
             </button>
-            <Link to="/about" className="icon-btn-secondary" title="About">
-              <Info size={18} />
-            </Link>
+            <button onClick={handleShare} className="icon-btn-secondary" title="Share">
+              <Share2 size={18} />
+            </button>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: '0.85rem', fontWeight: '800', color: '#1f2937' }}>{user.name}</div>
               <div style={{ fontSize: '0.7rem', color: 'var(--primary)', fontWeight: '900', letterSpacing: '0.5px' }}>{user.respectPoints} PTS</div>
@@ -95,9 +111,9 @@ const Header = () => {
           </div>
         ) : (
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <Link to="/about" className="icon-btn-secondary" title="About">
-              <Info size={18} />
-            </Link>
+            <button onClick={handleShare} className="icon-btn-secondary" title="Share">
+              <Share2 size={18} />
+            </button>
             <Link to="/login" className="btn-header-outline">
               <LogIn size={14} style={{ marginRight: '4px' }} /> Login
             </Link>
